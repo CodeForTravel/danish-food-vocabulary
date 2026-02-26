@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dansk Mad Ordbog 🇩🇰</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C8102E;
+    --cream: #FFF8F0;
+    --gold: #F4A426;
+    --dark: #1a1a2e;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  header {
+    text-align: center;
+    padding: 30px 20px 22px;
+    background: var(--red);
+    border-radius: 20px;
+    margin-bottom: 30px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -30px; left: -30px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+
+  header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.4rem;
+    letter-spacing: 1px;
+  }
+
+  header p {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin-top: 6px;
+  }
+
+  .flag { font-size: 2rem; margin-bottom: 8px; }
+
+  .category { margin-bottom: 30px; }
+
+  .category-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: var(--red);
+    border-left: 5px solid var(--gold);
+    padding-left: 12px;
+    margin-bottom: 14px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 12px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.13);
+  }
+
+  .num {
+    background: var(--red);
+    color: white;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.85rem;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .emoji {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .word-block { flex: 1; min-width: 0; }
+
+  .danish {
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--dark);
+    line-height: 1.3;
+  }
+
+  .english {
+    font-size: 0.75rem;
+    color: #777;
+    margin-top: 1px;
+  }
+
+  .bangla {
+    font-size: 0.75rem;
+    color: #C8102E;
+    margin-top: 1px;
+    font-weight: 600;
+  }
+
+  .speak-btn {
+    background: var(--gold);
+    border: none;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.1s;
+    font-size: 0.95rem;
+  }
+
+  .speak-btn:hover { background: #e09020; }
+  .speak-btn:active { transform: scale(0.9); }
+
+  .speak-btn.playing {
+    background: var(--red);
+    animation: pulse 0.6s ease infinite alternate;
+  }
+
+  @keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.15); }
+  }
+
+  .notice {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.8rem;
+    margin-top: 30px;
+    padding-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="flag">🇩🇰</div>
+  <h1>Dansk Mad Ordbog</h1>
+  <p>Klik på 🔊 for at høre udtalen &nbsp;|&nbsp; Click speaker to hear Danish pronunciation</p>
+</header>
+
+<div id="app"></div>
+<p class="notice">Uses your browser's built-in text-to-speech with Danish voice (da-DK)</p>
+
+<script>
+const categories = [
+  {
+    title: "🐟 Kød og fisk — Meat & Fish",
+    items: [
+      { num:1, emoji:"🐟", da:"en torsk",           en:"cod",           bn:"কড মাছ" },
+      { num:2, emoji:"🐠", da:"laks",               en:"salmon",        bn:"স্যামন মাছ" },
+      { num:3, emoji:"🦐", da:"en reje",            en:"shrimp",        bn:"চিংড়ি" },
+      { num:4, emoji:"🦃", da:"en kalkun",          en:"turkey",        bn:"টার্কি" },
+      { num:5, emoji:"🥩", da:"hakket oksekød",     en:"minced beef",   bn:"গরুর কিমা" },
+      { num:6, emoji:"🌭", da:"en pølse",           en:"sausage",       bn:"সসেজ" },
+      { num:7, emoji:"🍗", da:"en kylling",         en:"chicken",       bn:"মুরগি" },
+    ]
+  },
+  {
+    title: "🍎 Frugt og grønt — Fruit & Vegetables",
+    items: [
+      { num:1,  emoji:"🍋", da:"en citron",      en:"lemon",       bn:"লেবু" },
+      { num:2,  emoji:"🍎", da:"et æble",        en:"apple",       bn:"আপেল" },
+      { num:3,  emoji:"🍓", da:"et jordbær",     en:"strawberry",  bn:"স্ট্রবেরি" },
+      { num:4,  emoji:"🍍", da:"en ananas",      en:"pineapple",   bn:"আনারস" },
+      { num:5,  emoji:"🍊", da:"en appelsin",    en:"orange",      bn:"কমলা" },
+      { num:6,  emoji:"🥔", da:"en kartoffel",   en:"potato",      bn:"আলু" },
+      { num:7,  emoji:"🥬", da:"salat",          en:"lettuce",     bn:"লেটুস" },
+      { num:8,  emoji:"🥕", da:"en gulerod",     en:"carrot",      bn:"গাজর" },
+      { num:9,  emoji:"🥒", da:"en agurk",       en:"cucumber",    bn:"শসা" },
+      { num:10, emoji:"🧄", da:"et hvidløg",     en:"garlic",      bn:"রসুন" },
+      { num:11, emoji:"🫑", da:"en peberfrugt",  en:"bell pepper", bn:"ক্যাপসিকাম" },
+    ]
+  },
+  {
+    title: "🥛 Mejeri — Dairy",
+    items: [
+      { num:1, emoji:"🥣", da:"yoghurt",   en:"yogurt",  bn:"দই" },
+      { num:2, emoji:"🥛", da:"mælk",      en:"milk",    bn:"দুধ" },
+      { num:3, emoji:"🧈", da:"smør",      en:"butter",  bn:"মাখন" },
+      { num:4, emoji:"🫙", da:"fløde",     en:"cream",   bn:"ক্রিম" },
+      { num:5, emoji:"🧀", da:"en ost",    en:"cheese",  bn:"চিজ" },
+    ]
+  },
+  {
+    title: "🍞 Brød og kage — Bread & Cake",
+    items: [
+      { num:1, emoji:"🫓", da:"en bolle",        en:"bun",              bn:"বান রুটি" },
+      { num:2, emoji:"🍞", da:"et rugbrød",      en:"rye bread",        bn:"রাই রুটি" },
+      { num:3, emoji:"🥖", da:"et franskbrød",   en:"white bread loaf", bn:"সাদা পাউরুটি" },
+      { num:4, emoji:"🍪", da:"en småkage",      en:"cookie",           bn:"বিস্কুট" },
+      { num:5, emoji:"🎂", da:"en flødekage",    en:"cream cake",       bn:"ক্রিম কেক" },
+    ]
+  },
+  {
+    title: "🍬 Slik — Sweets",
+    items: [
+      { num:1, emoji:"🍭", da:"en slikkepind",  en:"lollipop",   bn:"ললিপপ" },
+      { num:2, emoji:"🖤", da:"en lakrids",     en:"licorice",   bn:"লিকোরিস" },
+      { num:3, emoji:"🍦", da:"en is",          en:"ice cream",  bn:"আইসক্রিম" },
+      { num:4, emoji:"🍫", da:"chokolade",      en:"chocolate",  bn:"চকলেট" },
+      { num:5, emoji:"🍬", da:"et bolsje",      en:"candy",      bn:"শক্ত মিষ্টি" },
+    ]
+  },
+  {
+    title: "☕ Drikke — Drinks",
+    items: [
+      { num:1, emoji:"🧃", da:"saftevand",  en:"juice drink", bn:"জুস পানীয়" },
+      { num:2, emoji:"🍵", da:"te",         en:"tea",         bn:"চা" },
+      { num:3, emoji:"☕", da:"kaffe",      en:"coffee",      bn:"কফি" },
+      { num:4, emoji:"🍷", da:"vin",        en:"wine",        bn:"মদ" },
+      { num:5, emoji:"🍺", da:"øl",         en:"beer",        bn:"বিয়ার" },
+    ]
+  }
+];
+
+function speak(text, btn) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'da-DK';
+    utter.rate = 0.85;
+    btn.classList.add('playing');
+    utter.onend = () => btn.classList.remove('playing');
+    utter.onerror = () => btn.classList.remove('playing');
+    window.speechSynthesis.speak(utter);
+  } else {
+    alert('Din browser understøtter ikke tekst-til-tale.');
+  }
+}
+
+const app = document.getElementById('app');
+
+categories.forEach(cat => {
+  const section = document.createElement('div');
+  section.className = 'category';
+
+  const title = document.createElement('div');
+  title.className = 'category-title';
+  title.textContent = cat.title;
+  section.appendChild(title);
+
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+
+  cat.items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="num">${item.num}</div>
+      <div class="emoji">${item.emoji}</div>
+      <div class="word-block">
+        <div class="danish">${item.da}</div>
+        <div class="english">${item.en}</div>
+        <div class="bangla">${item.bn}</div>
+      </div>
+      <button class="speak-btn" title="Hør udtalen" aria-label="Afspil ${item.da}">🔊</button>
+    `;
+    const btn = card.querySelector('.speak-btn');
+    btn.addEventListener('click', () => speak(item.da, btn));
+    grid.appendChild(card);
+  });
+
+  section.appendChild(grid);
+  app.appendChild(section);
+});
+</script>
+</body>
+</html>
