@@ -182,6 +182,62 @@
   .nav-tab:hover { background: var(--gold); color: white; }
   .nav-tab.active { background: var(--red); color: white; }
 
+  .search-wrap {
+    max-width: 500px;
+    margin: 0 auto 24px;
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 12px 44px 12px 40px;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    background: #fff;
+    box-shadow: var(--shadow);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    color: var(--dark);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--gold); }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  .search-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #aaa;
+    display: none;
+    padding: 4px;
+    line-height: 1;
+  }
+
+  .search-clear.visible { display: block; }
+
+  .no-results {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.95rem;
+    padding: 40px 0;
+    display: none;
+  }
+
   .notice {
     text-align: center;
     color: #aaa;
@@ -204,7 +260,14 @@
   <a href="verbs.html" class="nav-tab">💬 Verber</a>
 </nav>
 
+<div class="search-wrap">
+  <span class="search-icon">🔍</span>
+  <input id="search" class="search-input" type="search" placeholder="Søg på dansk eller engelsk… / Search Danish or English…" autocomplete="off">
+  <button id="search-clear" class="search-clear" aria-label="Ryd søgning">✕</button>
+</div>
+
 <div id="app"></div>
+<p id="no-results" class="no-results">Ingen resultater / No results found</p>
 <p class="notice">Uses your browser's built-in text-to-speech with Danish voice (da-DK)</p>
 
 <script>
@@ -329,6 +392,34 @@ categories.forEach(cat => {
   section.appendChild(grid);
   app.appendChild(section);
 });
+
+const searchInput = document.getElementById('search');
+const clearBtn = document.getElementById('search-clear');
+const noResults = document.getElementById('no-results');
+
+function runSearch() {
+  const q = searchInput.value.trim().toLowerCase();
+  clearBtn.classList.toggle('visible', q.length > 0);
+  let totalVisible = 0;
+
+  document.querySelectorAll('.category').forEach(section => {
+    let anyVisible = false;
+    section.querySelectorAll('.card').forEach(card => {
+      const danish = card.querySelector('.danish').textContent.toLowerCase();
+      const english = card.querySelector('.english').textContent.toLowerCase();
+      const matches = !q || danish.includes(q) || english.includes(q);
+      card.style.display = matches ? '' : 'none';
+      if (matches) anyVisible = true;
+    });
+    section.style.display = anyVisible ? '' : 'none';
+    if (anyVisible) totalVisible++;
+  });
+
+  noResults.style.display = totalVisible === 0 && q ? 'block' : 'none';
+}
+
+searchInput.addEventListener('input', runSearch);
+clearBtn.addEventListener('click', () => { searchInput.value = ''; runSearch(); searchInput.focus(); });
 </script>
 </body>
 </html>
