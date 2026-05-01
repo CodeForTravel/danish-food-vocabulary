@@ -28,7 +28,7 @@
     padding: 30px 20px 22px;
     background: var(--red);
     border-radius: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     color: white;
     position: relative;
     overflow: hidden;
@@ -160,6 +160,28 @@
     to { transform: scale(1.15); }
   }
 
+  .nav-tabs {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .nav-tab {
+    padding: 8px 24px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    color: var(--dark);
+    background: #fff;
+    box-shadow: var(--shadow);
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .nav-tab:hover { background: var(--gold); color: white; }
+  .nav-tab.active { background: var(--red); color: white; }
+
   .notice {
     text-align: center;
     color: #aaa;
@@ -176,6 +198,11 @@
   <h1>Dansk Mad Ordbog</h1>
   <p>Klik på 🔊 for at høre udtalen &nbsp;|&nbsp; Click speaker to hear Danish pronunciation</p>
 </header>
+
+<nav class="nav-tabs">
+  <a href="index.html" class="nav-tab active">🍎 Mad</a>
+  <a href="verbs.html" class="nav-tab">💬 Verber</a>
+</nav>
 
 <div id="app"></div>
 <p class="notice">Uses your browser's built-in text-to-speech with Danish voice (da-DK)</p>
